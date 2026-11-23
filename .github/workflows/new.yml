@@ -22,8 +22,8 @@ jobs:
       - name: Prepare smartdns package
         working-directory: ${{ env.SDK_DIR }}
         run: |
-          git clone https://github.com/pymumu/smartdns.git package/net/smartdns
-          git clone https://github.com/pymumu/luci-app-smartdns.git package/net/luci-app-smartdns
+          git clone --depth=1 --single-branch https://github.com/pymumu/smartdns.git package/net/smartdns
+          git clone --depth=1 --single-branch https://github.com/pymumu/luci-app-smartdns.git package/net/luci-app-smartdns
 
       - name: Feeds update & install
         working-directory: ${{ env.SDK_DIR }}
