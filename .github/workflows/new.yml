@@ -1,4 +1,4 @@
-name: Build smartdns ipk
+name: Build smartdns apk
 on:
   workflow_dispatch:
 
@@ -19,15 +19,8 @@ jobs:
           INDEX: 1
           ARTIFACTS_DIR: ${{ github.workspace }}/output
 
-      - name: Collect apk
-        id: collect
-        working-directory: ${{ env.SDK_DIR }}
-        run: |
-          mkdir -p ./output
-          find bin/packages -name "*.apk" -o -name "*.ipk" -o -name "*.zst" | xargs cp -t ./output
-
-      - name: Upload ipk
+      - name: Upload apk
         uses: actions/upload-artifact@v4
         with:
-          name: smartdns-ipk
-          path: ${{ env.SDK_DIR }}/output/
+          name: smartdns-apk-qualcommax-ipq60xx-25.12
+          path: ./output/
