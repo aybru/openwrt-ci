@@ -1,4 +1,4 @@
-name: Build smartdns apk
+name: Build smartdns ipk
 on:
   workflow_dispatch:
 
@@ -8,6 +8,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: mkdir dir
+        run: |
+          mkdir -p ./output
 
       - name: Build smartdns + luci-app-smartdns
         uses: openwrt/gh-action-sdk@main
@@ -19,8 +23,8 @@ jobs:
           INDEX: 1
           ARTIFACTS_DIR: ${{ github.workspace }}/output
 
-      - name: Upload apk
+      - name: Upload ipk
         uses: actions/upload-artifact@v4
         with:
-          name: smartdns-apk-qualcommax-ipq60xx-25.12
-          path: ./output/
+          name: smartdns-ipk
+          path: ${{ env.SDK_DIR }}/output/
