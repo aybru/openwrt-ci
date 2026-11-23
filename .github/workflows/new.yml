@@ -1,0 +1,53 @@
+name: Build smartdns ipk
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1. 拉取官方SDK（核心uses）
+      - name: Setup OpenWrt SDK
+        id: sdk
+        uses: openwrt/gh-action-sdk@main
+        with:
+          version: "25.12"
+          target: "qualcommax"
+          subtarget: "ipq60xx"
+
+      # 2. 进入SDK目录，拉取smartdns源码到SDK的package下
+      - name: Prepare smartdns package
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          git clone https://github.com/pymumu/smartdns.git package/net/smartdns
+          git clone https://github.com/pymumu/luci-app-smartdns.git package/net/luci-app-smartdns
+
+      - name: Feeds update & install
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      # 4. 编译 smartdns + luci-app-smartdns
+      - name: Compile
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          make package/net/smartdns/compile V=s -j$(nproc)
+          make package/net/luci-app-smartdns/compile V=s -j$(nproc)
+
+      # 5. 收集ipk，上传artifacts
+      - name: Collect apk
+        id: collect
+        working-directory: ${{ env.SDK_DIR }}
+        run: |
+          mkdir -p ./output
+          find bin/packages -name "*.apk" -o -name "*.ipk" -o -name "*.zst" | xargs cp -t ./output
+
+      - name: Upload ipk
+        uses: actions/upload-artifact@v4
+        with:
+          name: smartdns-ipk
+          path: ${{ env.SDK_DIR }}/output/
