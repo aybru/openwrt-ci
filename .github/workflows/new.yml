@@ -16,7 +16,7 @@ jobs:
       - name: Build smartdns + luci-app-smartdns
         uses: openwrt/gh-action-sdk@main
         env:
-          ARCH: qualcommax-ipq60xx-25.12
+          ARCH: qualcommax-ipq60xx
           EXTRA_FEEDS: "src-git smartdns https://github.com/pymumu/smartdns.git|src-git luci_app_smartdns https://github.com/pymumu/luci-app-smartdns.git"
           PACKAGES: "smartdns luci-app-smartdns"
           V: s
